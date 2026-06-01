@@ -33,7 +33,7 @@ with st.sidebar:
     herb_cost = st.slider("Herbicide $/acre", 0, 150, 80, 5)
     labor_cost = st.slider("Labor $/acre", 100, 800, 280, 10)
     yield_cwt = st.slider("Yield cwt/acre", 600, 1400, 920, 20)
-    onion_price = st.slider("Price $/cwt", 10, 30, 18.5, 0.5)
+    onion_price = st.slider("Price $/cwt", 10.0, 30.0, 18.5, 0.5)
     inflation = st.slider("Inflation %", 0.0, 8.0, 3.0, 0.5) / 100
     carbon_credit = st.slider("Carbon Credit $/acre", 0, 50, 25, 5)
     organic_mode = st.toggle("Organic Mode", value=False)
