@@ -12,63 +12,39 @@ st.set_page_config(page_title="Ag Robot ROI v8", layout="wide", page_icon="🌱"
 
 st.title("🌱 Precision Weeding ROI Analyzer v8")
 
-# ===================== SKELETON LOADER CSS =====================
+# ===================== TABLE PULSE OVERLAY CSS =====================
 st.markdown("""
 <style>
-@keyframes shimmer {
-    0% { background-position: -1000px 0; }
-    100% { background-position: 1000px 0; }
+@keyframes pulseFlash {
+    0% { opacity: 0; }
+    30% { opacity: 0.25; }
+    70% { opacity: 0.15; }
+    100% { opacity: 0; }
 }
-.skeleton-row {
-    height: 28px;
-    margin: 6px 0;
-    border-radius: 4px;
-    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-    background-size: 1000px 100%;
-    animation: shimmer 1.5s infinite linear;
+@keyframes borderGlow {
+    0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+    40% { box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.35); }
+    100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
 }
-.skeleton-chart {
-    height: 320px;
-    margin: 10px 0;
+.table-wrap {
+    position: relative;
     border-radius: 8px;
-    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-    background-size: 1000px 100%;
-    animation: shimmer 1.5s infinite linear;
+    animation: borderGlow 0.7s ease-out;
 }
-.skeleton-title {
-    height: 22px;
-    width: 60%;
-    margin: 12px 0 8px 0;
-    border-radius: 4px;
-    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-    background-size: 1000px 100%;
-    animation: shimmer 1.5s infinite linear;
-}
-.skeleton-badge {
-    height: 40px;
-    width: 80%;
-    margin: 10px 0;
+.table-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10;
+    background: rgba(34, 197, 94, 0.12);
     border-radius: 8px;
-    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-    background-size: 1000px 100%;
-    animation: shimmer 1.5s infinite linear;
+    animation: pulseFlash 0.7s ease-out forwards;
 }
 </style>
 """, unsafe_allow_html=True)
-
-def skeleton_table(rows=6):
-    html = '<div style="padding:10px 0;">'
-    html += '<div class="skeleton-title"></div>'
-    for _ in range(rows):
-        html += '<div class="skeleton-row"></div>'
-    html += '</div>'
-    return html
-
-def skeleton_chart():
-    return '<div class="skeleton-chart"></div>'
-
-def skeleton_badge():
-    return '<div class="skeleton-badge"></div>'
 
 # ===================== UPDATE ANIMATION =====================
 if "last_update" not in st.session_state:
@@ -149,18 +125,10 @@ tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
     "Field Map", "Monte Carlo", "5-Year Cash Flow"
 ])
 
-# Show skeleton loaders while "updating"
-placeholder = st.empty()
-with placeholder.container():
-    st.markdown(skeleton_table(8), unsafe_allow_html=True)
-    st.markdown(skeleton_badge(), unsafe_allow_html=True)
-    st.markdown(skeleton_chart(), unsafe_allow_html=True)
-
-time.sleep(0.4)
-placeholder.empty()
-
 with tab1:
+    st.markdown('<div class="table-wrap">', unsafe_allow_html=True)
     st.dataframe(df.style.highlight_max(subset=["5-Year Net Benefit", "5-Year ROI %"], color="lightgreen"), use_container_width=True)
+    st.markdown('<div class="table-overlay"></div></div>', unsafe_allow_html=True)
     best = df.loc[df["Payback (years)"].idxmin()]
     st.success(f"**Best Choice: {best['Machine']}** — Payback: {best['Payback (years)']} years")
 
