@@ -12,36 +12,33 @@ st.set_page_config(page_title="Ag Robot ROI v8", layout="wide", page_icon="🌱"
 
 st.title("🌱 Precision Weeding ROI Analyzer v8")
 
-# ===================== TABLE PULSE OVERLAY CSS =====================
+# ===================== GREEN LOADER BAR CSS =====================
 st.markdown("""
 <style>
-@keyframes pulseFlash {
-    0% { opacity: 0; }
-    30% { opacity: 0.25; }
-    70% { opacity: 0.15; }
-    100% { opacity: 0; }
+@keyframes loaderSlide {
+    0% { left: -40%; }
+    50% { left: 20%; width: 80%; }
+    100% { left: 100%; width: 40%; }
 }
-@keyframes borderGlow {
-    0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
-    40% { box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.35); }
-    100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
-}
-.table-wrap {
+.green-loader-bar {
     position: relative;
-    border-radius: 8px;
-    animation: borderGlow 0.7s ease-out;
+    height: 4px;
+    width: 100%;
+    background: rgba(34, 197, 94, 0.15);
+    border-radius: 2px;
+    overflow: hidden;
+    margin: 8px 0 16px 0;
 }
-.table-overlay {
+.green-loader-bar::after {
+    content: "";
     position: absolute;
     top: 0;
-    left: 0;
-    width: 100%;
+    left: -40%;
     height: 100%;
-    pointer-events: none;
-    z-index: 10;
-    background: rgba(34, 197, 94, 0.12);
-    border-radius: 8px;
-    animation: pulseFlash 0.7s ease-out forwards;
+    width: 40%;
+    background: linear-gradient(90deg, rgba(34,197,94,0) 0%, rgba(34,197,94,0.9) 50%, rgba(34,197,94,0) 100%);
+    border-radius: 2px;
+    animation: loaderSlide 1.2s ease-in-out;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -125,10 +122,10 @@ tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
     "Field Map", "Monte Carlo", "5-Year Cash Flow"
 ])
 
+st.markdown('<div class="green-loader-bar"></div>', unsafe_allow_html=True)
+
 with tab1:
-    st.markdown('<div class="table-wrap">', unsafe_allow_html=True)
     st.dataframe(df.style.highlight_max(subset=["5-Year Net Benefit", "5-Year ROI %"], color="lightgreen"), use_container_width=True)
-    st.markdown('<div class="table-overlay"></div></div>', unsafe_allow_html=True)
     best = df.loc[df["Payback (years)"].idxmin()]
     st.success(f"**Best Choice: {best['Machine']}** — Payback: {best['Payback (years)']} years")
 
