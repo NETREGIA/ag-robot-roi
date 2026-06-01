@@ -12,16 +12,69 @@ st.set_page_config(page_title="Ag Robot ROI v8", layout="wide", page_icon="🌱"
 
 st.title("🌱 Precision Weeding ROI Analyzer v8")
 
+# ===================== SKELETON LOADER CSS =====================
+st.markdown("""
+<style>
+@keyframes shimmer {
+    0% { background-position: -1000px 0; }
+    100% { background-position: 1000px 0; }
+}
+.skeleton-row {
+    height: 28px;
+    margin: 6px 0;
+    border-radius: 4px;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 1000px 100%;
+    animation: shimmer 1.5s infinite linear;
+}
+.skeleton-chart {
+    height: 320px;
+    margin: 10px 0;
+    border-radius: 8px;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 1000px 100%;
+    animation: shimmer 1.5s infinite linear;
+}
+.skeleton-title {
+    height: 22px;
+    width: 60%;
+    margin: 12px 0 8px 0;
+    border-radius: 4px;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 1000px 100%;
+    animation: shimmer 1.5s infinite linear;
+}
+.skeleton-badge {
+    height: 40px;
+    width: 80%;
+    margin: 10px 0;
+    border-radius: 8px;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 1000px 100%;
+    animation: shimmer 1.5s infinite linear;
+}
+</style>
+""", unsafe_allow_html=True)
+
+def skeleton_table(rows=6):
+    html = '<div style="padding:10px 0;">'
+    html += '<div class="skeleton-title"></div>'
+    for _ in range(rows):
+        html += '<div class="skeleton-row"></div>'
+    html += '</div>'
+    return html
+
+def skeleton_chart():
+    return '<div class="skeleton-chart"></div>'
+
+def skeleton_badge():
+    return '<div class="skeleton-badge"></div>'
+
 # ===================== UPDATE ANIMATION =====================
 if "last_update" not in st.session_state:
     st.session_state.last_update = time.time()
 
 st.session_state.last_update = time.time()
-
-with st.empty():
-    for i in range(3):
-        st.toast(f"🔄 Updating analysis{'.' * (i + 1)}", icon="🌱")
-        time.sleep(0.15)
 
 # ===================== SESSION STATE =====================
 if "machine_prices" not in st.session_state:
@@ -95,6 +148,16 @@ tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
     "ROI Comparison", "Compare 3 Machines", "Interactive Charts",
     "Field Map", "Monte Carlo", "5-Year Cash Flow"
 ])
+
+# Show skeleton loaders while "updating"
+placeholder = st.empty()
+with placeholder.container():
+    st.markdown(skeleton_table(8), unsafe_allow_html=True)
+    st.markdown(skeleton_badge(), unsafe_allow_html=True)
+    st.markdown(skeleton_chart(), unsafe_allow_html=True)
+
+time.sleep(0.4)
+placeholder.empty()
 
 with tab1:
     st.dataframe(df.style.highlight_max(subset=["5-Year Net Benefit", "5-Year ROI %"], color="lightgreen"), use_container_width=True)
