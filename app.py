@@ -6,10 +6,22 @@ from fpdf import FPDF
 from datetime import datetime
 import folium
 from streamlit_folium import st_folium
+import time
 
 st.set_page_config(page_title="Ag Robot ROI v8", layout="wide", page_icon="🌱")
 
 st.title("🌱 Precision Weeding ROI Analyzer v8")
+
+# ===================== UPDATE ANIMATION =====================
+if "last_update" not in st.session_state:
+    st.session_state.last_update = time.time()
+
+st.session_state.last_update = time.time()
+
+with st.empty():
+    for i in range(3):
+        st.toast(f"🔄 Updating analysis{'.' * (i + 1)}", icon="🌱")
+        time.sleep(0.15)
 
 # ===================== SESSION STATE =====================
 if "machine_prices" not in st.session_state:
