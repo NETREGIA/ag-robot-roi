@@ -185,7 +185,7 @@ with tab4:
 with tab5:
     st.subheader("Monte Carlo Risk Simulation")
     n = st.slider("Simulations", 1000, 10000, 5000, 1000)
-    sims = [300000 / (acres * (herb_cost * 0.75 * np.random.triangular(0.9, weed_mult, 1.6))) for _ in range(n)]
+    sims = [300000 / (acres * (herb_cost * 0.75 * np.random.triangular(0.9, max(weed_mult, 0.91), 1.6))) for _ in range(n)]
     fig = px.histogram(sims, nbins=40, title="Payback Distribution")
     st.plotly_chart(fig, use_container_width=True)
 
